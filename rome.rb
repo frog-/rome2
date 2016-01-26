@@ -54,8 +54,11 @@ class Number
 			end
 		end
 
-		# Track highest value seen yet
+		# Track highest rank seen yet and largest previous non-prefixing rank
+		# These values are initially -1 because the ranks start at 0 and must
+		# be exceedable
 		prev_rank = -1
+		largest_np = -1
 		# Monitor prefixes; only one character may be prefixed
 		prefix = false
 		# Max three like symbols in a row
@@ -87,6 +90,9 @@ class Number
 					end
 				# If symbol is different, update working info and reset streak
 				else
+					# Note that the largest_np is always "two behind". This way
+					# we know it was not prefixed
+					largest_np = prev_rank
 					prev_rank = ch.rank
 					prev_symbol = ch.symbol
 					streak = 1
@@ -109,7 +115,12 @@ class Number
 					abort
 				end
 
-				# 
+				# There can be no previous non-prefixed values that are greater
+				# than or equal to the current prefix
+				if ch.rank <= largest_np
+					puts "Error: prefixed value exceeded or matched by earlier value"
+					abort
+				end
 
 				# If Ok, subtract the prefix and set the prefix flag
 				@value -= ch.value
