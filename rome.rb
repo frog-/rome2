@@ -12,6 +12,10 @@ class Number
 			@value = value
 			@rank = rank
 		end
+
+		def can_prefix?(other_rank)
+			return other_rank - @rank <= 2
+		end
 	end
 	
 	#
@@ -29,7 +33,7 @@ class Number
 	@@char_d = Numeral.new("D", 500, 5)
 	@@char_m = Numeral.new("M", 1000, 6)
 
-	# Create a new Number object from a numeral string
+	# Create a new Number object from a romanized string
 	def initialize(roman)
 		@value = 0
 		@chars = []
@@ -46,27 +50,72 @@ class Number
 			when "C" then @chars << @@char_c
 			when "D" then @chars << @@char_d
 			when "M" then @chars << @@char_m
-			else puts "Invalid numeral" ; abort
+			else puts "Invalid symbols" ; abort
 			end
 		end
 
 		# Track highest value seen yet
-		cur_rank = @chars[0].rank
+		prev_rank = -1
 		# Monitor prefixes; only one character may be prefixed
-		precede = false
+		prefix = false
+		# Max three like symbols in a row
+		prev_symbol = ""
+		streak = 0
 
+		#
+		# Validate and calculate value of roman number
+		#
 		@chars.each do |ch|
-			if ch.rank >= cur_rank
-				@value += ch.value
-				precede = false
-				cur_rank = ch.rank if ch.rank > cur_rank
-			else
-				if precede == true
-					puts "Invalid numeral" ; abort
-				else
-					@value -= ch.value
-					precede = true
+			# If not a prefixing value...
+			if ch.rank >= prev_rank
+				# If the preceding value was a prefix, this value must be
+				# at least 10x the size
+				if prefix && ch.rank - prev_rank < 2
+					puts "Error: Improper prefixing"
+					abort
 				end
+
+				# If last symbol was the same, test for repeats
+				if ch.rank == prev_rank
+					# If there are four symbols in a row, or if a non-10
+					# was repeated, the symbol is invalid.
+					# All non-10 symbols have odd ranks, so modulus spots them
+					streak += 1
+					if streak > 3 || ch.rank % 2 == 1
+						puts "Error: Illegal repetition"
+						abort
+					end
+				# If symbol is different, update working info and reset streak
+				else
+					prev_rank = ch.rank
+					prev_symbol = ch.symbol
+					streak = 1
+				end
+
+				# Increase total value, reset prefix flag
+				@value += ch.value
+				prefix = false
+			# If indeed a prefixing value...
+			else
+				# Can't have more than two prefixed numerals
+				if prefix == true
+					puts "Error: multiple prefixes"
+					abort
+				end
+
+				# Prefixes only valid on 1/5th or 1/10th their value
+				unless ch.can_prefix? prev_rank
+					puts "Error: #{ch.symbol} cannot prefix #{prev_symbol}"
+					abort
+				end
+
+				# 
+
+				# If Ok, subtract the prefix and set the prefix flag
+				@value -= ch.value
+				prefix = true
+				prev_rank = ch.rank
+				prev_symbol = ch.symbol
 			end
 		end
 	end
