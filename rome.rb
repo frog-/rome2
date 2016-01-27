@@ -26,15 +26,24 @@ $numerals = [
 	Numeral.new("C", 100, 4),
 	Numeral.new("D", 500, 5),
 	Numeral.new("M", 1000, 6),
+	Numeral.new("v", 5000, 7),
+	Numeral.new("x", 10000, 8),
+	Numeral.new("l", 50000, 9),
+	Numeral.new("c", 100000, 10),
+	Numeral.new("d", 500000, 11),
+	Numeral.new("m", 1000000, 12),
 ]
 
 
+# Note!
+# Because of how numbers > 1000 are stored, case checking must be done
+# by the frontend
 def Numeral.to_hindu(roman)
 	# Read the string backwards, associate each character 
 	# with a Numeral object. The string is read backwards to
 	# avoid look-ahead for prefixed values
 	chars = []
-	roman.upcase.reverse.split("").each do |ch|
+	roman.reverse.split("").each do |ch|
 		case ch
 		when "I" then chars << $numerals[0]
 		when "V" then chars << $numerals[1]
@@ -132,19 +141,22 @@ def Numeral.to_hindu(roman)
 	return value
 end
 
+
 def Numeral.to_roman(number)
-	# Don't try to convert non-numbers
-	if number == "" || number == 0
+	# Don't try to convert non-numbers, max value is 999999
+	if number == "" || number == 0 || number >= 1000000 || !number.is_a?(Integer)
 		return 0
 	end
 
 	roman = ""
+
+	# Loop through all digits
 	power = 0
 	while number > 0
 		# Increase power of ten by one, to "move left" one digit
 		power += 1
 
-		# Consume the last digit for processing
+		# Consume the least-significant digit for processing
 		cur_value = number % 10
 		number = (number / 10).floor
 
@@ -186,10 +198,8 @@ def Numeral.to_roman(number)
 	return roman
 end
 
-
-
 letters = ARGV.first
-num = Numeral.to_hindu(letters)
+num = Numeral.to_hindu(letters.upcase)
 puts num
 revert = Numeral.to_roman(num)
 puts revert
