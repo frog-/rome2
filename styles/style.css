@@ -1,0 +1,55 @@
+#frame {
+	height: 250px;
+	width: 300px;
+	padding: 5px;
+	border-width: 2px;
+	border-style: outset;
+	margin: auto;
+	background: #4e4e4e;
+	border-radius: 5px;
+}
+
+input {
+	margin: 10px auto 5px auto;
+	padding: 5px;
+	width: 100%;
+	font-family: silkscreennormal;
+	font-size: 16pt;
+	text-align: right;
+	background: #bfd1a8;
+}
+
+button {
+	width: 75px;
+	height: 30px;
+	border-radius: 5px;
+	outline: none;
+}
+
+table {
+	margin: auto;
+}
+td {
+	width: 50px;
+}
+
+body {
+	background: gray;
+}
+
+#name {
+	text-align: right;
+}
+
+@font-face {
+    font-family: 'silkscreennormal';
+    src: url('slkscr-webfont.eot');
+    src: url('slkscr-webfont.eot?#iefix') format('embedded-opentype'),
+         url('slkscr-webfont.woff') format('woff'),
+         url('slkscr-webfont.ttf') format('truetype'),
+         url('slkscr-webfont.svg#silkscreennormal') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+

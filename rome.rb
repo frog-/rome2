@@ -1,6 +1,4 @@
-#
 # The Numeral class holds the values etc for each unique roman numeral
-#
 class Numeral
 	attr_reader :symbol
 	attr_reader :value
@@ -148,14 +146,10 @@ def Numeral.to_roman(number)
 		return 0
 	end
 
+	# Loop through all digits, store result in `roman`
 	roman = ""
-
-	# Loop through all digits
 	power = 0
 	while number > 0
-		# Increase power of ten by one, to "move left" one digit
-		power += 1
-
 		# Consume the least-significant digit for processing
 		cur_value = number % 10
 		number = (number / 10).floor
@@ -168,7 +162,9 @@ def Numeral.to_roman(number)
 		# X (for 10-30), L (for 40-80) and C (for 90).
 		#
 		# If the rank of I is 0, then the highest rank needed to express
-		# all values of the corresponding power is 2 * (rank + 1).
+		# all values of the corresponding power is 2 * power, and the
+		# lowest rank is (2 * power) - 2
+		power += 1
 		range = power * 2
 		high = $numerals[range].symbol
 		five = $numerals[range-1].symbol
