@@ -140,11 +140,13 @@ def Numeral.to_roman(number)
 
 	roman = ""
 	power = 0
-	while (10 ** power) <= number
+	while number > 0
+		# Increase power of ten by one, to "move left" one digit
 		power += 1
-		place = 10 ** power
-		cur_value = number % place
-		puts cur_value
+
+		# Consume the last digit for processing
+		cur_value = number % 10
+		number = (number / 10).floor
 
 		# Determine the range of numerals for this power of ten.
 		#
@@ -165,7 +167,7 @@ def Numeral.to_roman(number)
 		# There is a pattern to how each power of ten can be represented.
 		# In the following description, L, F, and H are low, five, and high
 		# as above. "n" represents the number of ones above zero or five.
-		# 	  9 	LH
+		# 	  9		LH
 		# 	>=5		FnL
 		# 	  4		LF
 		# 	>=0		nL
